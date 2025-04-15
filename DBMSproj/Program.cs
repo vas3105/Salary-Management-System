@@ -1,6 +1,9 @@
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer;
 using DBMSproj.Components;
-using DBMSproj.Services; // Make sure this matches the correct namespace of your AttendanceService
-
+using DBMSproj.Services; 
+using DBMSproj.Data; 
 namespace DBMSproj;
 
 public class Program
@@ -8,13 +11,17 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         // Add services to the container.
         builder.Services.AddRazorComponents()
-            .AddInteractiveServerComponents();
+                        .AddInteractiveServerComponents();
 
         // Register AttendanceService
         builder.Services.AddScoped<AttendanceService>();
+        //Register BankDetailsService
+        builder.Services.AddScoped<BankDetailsService>();
 
         var app = builder.Build();
 

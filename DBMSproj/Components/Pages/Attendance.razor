@@ -84,22 +84,23 @@
         <table>
             <thead>
                 <tr>
+                    <th>Attendance ID</th>
                     <th>Date</th>
                     <th>Status</th>
-                    <th>Percentage</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var record in AttendanceRecords)
                 {
                     <tr>
-                        <td>@record.Date.ToShortDateString()</td>
+                        <td>@record.Atid</td>        
+                        <td>@record.ADate.ToShortDateString()</td>
                         <td>@record.Status</td>
-                        <td>@record.Percentage%</td>
                     </tr>
                 }
             </tbody>
         </table>
+
     </div>
 
     <!-- Leave Application Section -->
@@ -115,9 +116,6 @@
             <label for="type">Type:</label>
             <InputText id="type" @bind-Value="LeaveApplication.Type" class="form-control" />
 
-            <label for="reason">Reason:</label>
-            <InputText id="reason" @bind-Value="LeaveApplication.Reason" class="form-control" />
-
             <!-- Display Status (Read-only) -->
             <label for="status">Status:</label>
             <InputText id="status" @bind-Value="LeaveApplication.Status" class="form-control" readonly />
@@ -128,31 +126,28 @@
 </div>
 
 @code {
-    private List<AttendanceRecord> AttendanceRecords = new List<AttendanceRecord>
-    {
-        new AttendanceRecord { Date = DateTime.Now.AddDays(-1), Status = "Present", Percentage = 100 },
-        new AttendanceRecord { Date = DateTime.Now.AddDays(-2), Status = "Absent", Percentage = 50 },
-    };
+    @code {
+        private int employeeId = 101; // your test employee ID
 
-    private LeaveApplication LeaveApplication = new LeaveApplication
+        private List<AttendanceRecord> AttendanceRecords = new List<AttendanceRecord>();
+        private LeaveApplication LeaveApplication = new LeaveApplication
         {
             Status = "Waiting"
         };
 
-    private async Task SubmitLeave()
-    {
-        await attendanceService.AddLeaveApplicationAsync(LeaveApplication);
+        protected override async Task OnInitializedAsync()
+        {
+            AttendanceRecords = await attendanceService.GetAttendanceRecordsAsync(employeeId);
+        }
 
-        LeaveApplication = new LeaveApplication { Status = "Waiting" }; // Reset form
+        private async Task SubmitLeave()
+        {
+            LeaveApplication.EmpId = employeeId;  // Must set EmpId
+            await attendanceService.AddLeaveApplicationAsync(LeaveApplication);
+            LeaveApplication = new LeaveApplication { Status = "Waiting" };
+        }
     }
 
 
-
-    private class AttendanceRecord
-    {
-        public DateTime Date { get; set; }
-        public string Status { get; set; }
-        public int Percentage { get; set; }
-    }
 
 }

@@ -1,87 +1,88 @@
 ﻿@page "/BankDetails"
+@using DBMSproj.Services
 @rendermode InteractiveServer
-
+@inject BankDetailsService bankDetailsService
 <PageTitle>Bank Details</PageTitle>
 
 <style>
     .container {
-        max-width: 700px;
-        margin: auto;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        background-color: #f9f9f9;
-        text-align: center;
+    max-width: 700px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    text-align: center;
     }
 
     .form-group {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
     }
 
     label {
-        font-weight: bold;
-        flex: 1;
-        text-align: left;
+    font-weight: bold;
+    flex: 1;
+    text-align: left;
     }
 
     .form-control {
-        flex: 2;
-        padding: 8px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        width: 100%;
+    flex: 2;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
     }
 
     .icon-container {
-        text-align: center;
-        margin-bottom: 15px;
+    text-align: center;
+    margin-bottom: 15px;
     }
 
     .icon {
-        font-size: 50px;
+    font-size: 50px;
     }
 
     .edit-icon {
-        font-size: 20px;
-        cursor: pointer;
-        margin-left: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 10px;
     }
 
-        .edit-icon:hover {
-            color: #007bff;
-        }
+    .edit-icon:hover {
+    color: #007bff;
+    }
 
     .header-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     }
 
-        .header-container h2 {
-            margin: 0;
-        }
+    .header-container h2 {
+    margin: 0;
+    }
 
     .submit-btn {
-        margin-top: 20px;
-        padding: 10px 15px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     }
 
-        .submit-btn:hover {
-            background-color: #45a049;
-        }
+    .submit-btn:hover {
+    background-color: #45a049;
+    }
 
     .confirmation {
-        margin-top: 15px;
-        color: green;
-        font-weight: bold;
+    margin-top: 15px;
+    color: green;
+    font-weight: bold;
     }
 </style>
 
@@ -129,21 +130,13 @@
 
     @if (ShowConfirmation)
     {
-        <p class="confirmation">Bank details submitted successfully! ✅</p>
+        <p class="confirmation">Bank details submitted successfully</p>
     }
 </div>
 
 @code {
-    public string EmployeeId { get; set; } = "";
-
-    public class BankInfo
-    {
-        public string AccountHolderName { get; set; } = "";
-        public string AccountNumber { get; set; } = "";
-        public string IFSCCode { get; set; } = "";
-        public string BankName { get; set; } = "";
-        public string Branch { get; set; } = "";
-    }
+   private  string EmployeeId = "101";
+    //public string EmployeeId { get; set; } = "";
 
     public BankInfo Bank_Details { get; set; } = new BankInfo();
 
@@ -155,10 +148,25 @@
         IsReadOnly = !IsReadOnly;
     }
 
-    private void SubmitForm()
+    private async Task SubmitForm()
     {
-        // Simulate saving data (you can add API calls here)
-        ShowConfirmation = true;
-        IsReadOnly = true;
+        if (int.TryParse(EmployeeId, out int empId))
+        {
+            await bankDetailsService.InsertOrUpdateBankDetailsAsync(empId, Bank_Details);
+            ShowConfirmation = true;
+            IsReadOnly = true;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (int.TryParse(EmployeeId, out int empId))
+        {
+            var details = await bankDetailsService.GetBankDetailsAsync(empId);
+            if (details != null)
+            {
+                Bank_Details = details;
+            }
+        }
     }
 }
