@@ -16,10 +16,18 @@ namespace DBMSproj.Services
         public async Task<BankInfo?> GetBankDetailsAsync(int empId)
         {
             using var connection = new SqlConnection(_connectionString);
-            var query = "SELECT A_Name, A_Number, IFSC, Bank_Name, Branch FROM Bank_Details WHERE EmpId = @EmpId";
+            var query = @"SELECT 
+                A_Name AS AccountHolderName, 
+                A_Number AS AccountNumber, 
+                IFSC AS IFSCCode, 
+                Bank_Name AS BankName, 
+                Branch 
+             FROM Bank_Details 
+             WHERE EmpId = @EmpId";
+
             return await connection.QueryFirstOrDefaultAsync<BankInfo>(query, new { EmpId = empId });
         }
-
+        //disabled the below function
         public async Task InsertOrUpdateBankDetailsAsync(int empId, BankInfo bankInfo)
         {
             using var connection = new SqlConnection(_connectionString);
@@ -37,7 +45,7 @@ namespace DBMSproj.Services
             else
             {
                 var insertQuery = @"INSERT INTO Bank_Details (EmpId, A_Name, A_Number, IFSC, Bank_Name, Branch)
-                                    VALUES (@EmpId, @AccountHolderName, @AccountNumber, @IFSC, @Bank_Name, @Branch)";
+                                    VALUES (@EmpId, @AccountHolderName, @AccountNumber, @IFSCCode, @BankName, @Branch)";
                 await connection.ExecuteAsync(insertQuery, new { EmpId = empId, bankInfo.AccountHolderName, bankInfo.AccountNumber, bankInfo.IFSCCode, bankInfo.BankName, bankInfo.Branch });
             }
         }

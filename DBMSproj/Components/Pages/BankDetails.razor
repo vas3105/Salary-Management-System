@@ -93,13 +93,13 @@
 
     <div class="form-group">
         <label>Employee ID:</label>
-        <input type="text" class="form-control" @bind="EmployeeId" />
+        <input type="text" class="form-control" @bind="EmployeeId" disabled="@IsReadOnly" />
     </div>
 
-    <div class="header-container">
-        <h2>Bank Details</h2>
-        <span class="edit-icon" @onclick="ToggleEditMode">✏️</span>
-    </div>
+    <!--<div class="header-container">
+    <h2>Bank Details</h2>
+    <span class="edit-icon" @onclick="ToggleEditMode">✏️</span>
+    </div>-->
 
     <div class="form-group">
         <label>Account Holder Name:</label>
@@ -126,16 +126,16 @@
         <input type="text" class="form-control" @bind="Bank_Details.Branch" disabled="@IsReadOnly" />
     </div>
 
-    <button class="submit-btn" @onclick="SubmitForm" disabled="@IsReadOnly">Submit</button>
+    <!--  <button class="submit-btn" @onclick="SubmitForm" disabled="@IsReadOnly">Submit</button>
 
     @if (ShowConfirmation)
     {
-        <p class="confirmation">Bank details submitted successfully</p>
-    }
+    <p class="confirmation">Bank details submitted successfully</p>
+    }-->
 </div>
 
 @code {
-   private  string EmployeeId = "101";
+    private  string EmployeeId = "101";
     //public string EmployeeId { get; set; } = "";
 
     public BankInfo Bank_Details { get; set; } = new BankInfo();
@@ -143,7 +143,7 @@
     private bool IsReadOnly { get; set; } = true;
     private bool ShowConfirmation { get; set; } = false;
 
-    private void ToggleEditMode()
+    /*private void ToggleEditMode()
     {
         IsReadOnly = !IsReadOnly;
     }
@@ -155,14 +155,16 @@
             await bankDetailsService.InsertOrUpdateBankDetailsAsync(empId, Bank_Details);
             ShowConfirmation = true;
             IsReadOnly = true;
-        }
-    }
+            }
+        }*/
 
     protected override async Task OnInitializedAsync()
     {
-        if (int.TryParse(EmployeeId, out int empId))
-        {
-            var details = await bankDetailsService.GetBankDetailsAsync(empId);
+    int empID = 101; //fix it later
+    if (int.TryParse(EmployeeId, out int empId))
+    {
+        
+        var details = await bankDetailsService.GetBankDetailsAsync(empId);
             if (details != null)
             {
                 Bank_Details = details;
