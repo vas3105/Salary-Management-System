@@ -24,6 +24,8 @@ public class Program
         builder.Services.AddScoped<BankDetailsService>();
         // Register EmployeeService
         builder.Services.AddScoped<EmployeeService>();
+        //Register TaxesService
+        builder.Services.AddScoped<TaxesService>();
 
         var app = builder.Build();
 

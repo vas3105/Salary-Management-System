@@ -12,5 +12,6 @@ namespace DBMSproj.Data
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<BankDetails> BankDetails { get; set; }
         public DbSet<Employepage> Employee { get; set; }
+        public DbSet <Taxes> Taxes { get; set; }
     }
 }

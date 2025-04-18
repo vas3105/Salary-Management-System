@@ -24,9 +24,11 @@ namespace DBMSproj.Services
                     Name,
                     PhoneNo,
                     EmailID AS PersonalEmail,
-                    Dept as Department,
-                    Designation
-                   
+                    Dept AS Department,
+                    Designation,
+                    dob AS DateOfBirth,
+                    doj AS DateOfJoining,
+                    office_email AS OfficeEmail
                 FROM Employee
                 WHERE EmpId = @EmpId
             ";
@@ -41,11 +43,11 @@ namespace DBMSproj.Services
         public string Name { get; set; } = "";
         public string PhoneNo { get; set; } = "";
         public string PersonalEmail { get; set; } = "";
-        //public string OfficeEmail { get; set; } = "";
+        public string OfficeEmail { get; set; } = "";
         public string Department { get; set; } = "";
         public string Designation { get; set; } = "";
-       // public DateTime? DateOfJoining { get; set; }
-       // public DateTime? DateOfBirth { get; set; }
+        public DateTime? DateOfJoining { get; set; }
+        public DateTime? DateOfBirth { get; set; }
        // public string TemporaryAddress { get; set; } = "";
        // public string PermanentAddress { get; set; } = "";
     }
